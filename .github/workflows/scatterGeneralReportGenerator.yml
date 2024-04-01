@@ -24,5 +24,5 @@ jobs:
       - name: Upload Scatter Diagram
         uses: actions/upload-artifact@v2
         with:
-          name: scatter_diagram_issues
-          path: scatter_diagram_issues.png
+          name: scatter_diagram_commits
+          path: scatter_diagram_commits.png

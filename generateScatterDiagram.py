@@ -10,30 +10,37 @@ repo = g.get_repo(repo_name)
 
 
 def main() -> None:
-    issues = repo.get_issues()
-    priorities = []
-    estimations = []
+    commits = repo.get_commits()
+
+    lines_added_per_commit = []
+    files_modified_per_commit = []
+
+    for commit in commits:
+        print(commit.raw_data)
+        files = commit.files
+        lines_added = 0
+        files_modified = 0
+
+        for file in files:
+            files_modified += 1
+            lines = file.raw_data.get('additions', 0)
+
+            lines_added += lines
+
+        lines_added_per_commit.append(lines_added)
+        files_modified_per_commit.append(files_modified)
 
 
-
-    for issue in issues:
-        print(issue.raw_data)
-        if 'priority' in issue.raw_data['fields']:
-            priority = issue.raw_data['fields']['priority']
-            priorities.append(priority)
-        if 'estimate' in issue.raw_data['fields']:
-            estimate = issue.raw_data['fields']['estimate']
-            estimations.append(estimate)
 
     plt.figure(figsize=(10, 6))
-    plt.scatter(estimations, priorities, color='blue', alpha=0.5)
+    plt.scatter(lines_added_per_commit, files_modified_per_commit)
 
-    plt.xlabel('Estimation')
-    plt.ylabel('Priority')
-    plt.title('Scatter Diagram of Estimations and Priorities')
+    plt.xlabel('Lines added')
+    plt.ylabel('Files modified')
+    plt.title('Scatter Diagram of Lines added and Files modified')
     plt.grid(True)
 
-    plt.savefig("scatter_diagram_issues.png")
+    plt.savefig("scatter_diagram_commits.png")
 
 
 if __name__ == '__main__':

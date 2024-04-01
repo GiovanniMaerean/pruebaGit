@@ -14,8 +14,10 @@ def main() -> None:
     priorities = []
     estimations = []
 
-    for issue in issues:
 
+
+    for issue in issues:
+        print(issue.raw_data)
         if 'priority' in issue.raw_data['fields']:
             priority = issue.raw_data['fields']['priority']
             priorities.append(priority)

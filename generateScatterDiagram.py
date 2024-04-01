@@ -32,6 +32,7 @@ def get_data() -> None:
     commits = repo.get_commits()
 
     for commit in commits:
+        print(commit.raw_data)
         lines_added = commit.stats.additions
         files_modified = len(commit.files)
         author_name = commit.author.login

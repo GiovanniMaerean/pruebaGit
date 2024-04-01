@@ -8,16 +8,19 @@ repo_name = "GiovanniMaerean/pruebaGit"
 g = Github(token)
 repo = g.get_repo(repo_name)
 
+lines_added_per_commit = []
+files_modified_per_commit = []
+
 
 def main() -> None:
+    get_data()
+    generate_diagram()
+
+
+def get_data() -> None:
     commits = repo.get_commits()
 
-    lines_added_per_commit = []
-    files_modified_per_commit = []
-
     for commit in commits:
-        print(commit.raw_data)
-
         lines_added = commit.stats.additions
         files_modified = len(commit.files)
 
@@ -25,7 +28,7 @@ def main() -> None:
         files_modified_per_commit.append(files_modified)
 
 
-
+def generate_diagram() -> None:
     plt.figure(figsize=(10, 6))
     plt.scatter(lines_added_per_commit, files_modified_per_commit)
 

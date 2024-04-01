@@ -1,4 +1,4 @@
-name: General Report - Scatter Diagram of Issues (all)
+name: General Report - Scatter Diagram of Commits (all)
 
 on:
   workflow_dispatch:

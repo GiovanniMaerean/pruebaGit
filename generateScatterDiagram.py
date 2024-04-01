@@ -20,7 +20,7 @@ authors_of_commits = []
 
 
 author_colors = {
-    "GiovanniMaerean": "blue"
+    "GiovanniMaerean": "blue",
 }
 
 def main() -> None:
@@ -44,9 +44,16 @@ def get_data() -> None:
 
 def generate_diagram() -> None:
     plt.figure(figsize=(10, 6))
+    legend_authors = set()
     for author, lines_added, files_modified in zip(authors_of_commits, lines_added_per_commit, files_modified_per_commit):
         color = author_colors.get(author, "black")  # Default to black if author not in author_colors
-        plt.scatter(lines_added, files_modified, color=color, label=author)
+
+        if author not in legend_authors:
+
+            plt.scatter(lines_added, files_modified, color=color, label=author)
+            legend_authors.add(author)
+        else:
+            plt.scatter(lines_added, files_modified, color=color)
 
     plt.xlabel('Lines added')
     plt.ylabel('Files modified')

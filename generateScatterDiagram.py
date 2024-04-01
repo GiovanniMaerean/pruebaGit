@@ -3,7 +3,7 @@ from github import Github
 import matplotlib.pyplot as plt
 
 token = os.getenv('GITHUB_TOKEN')
-repo_name = "username/repo_name"
+repo_name = "GiovanniMaerean/pruebaGit"
 
 g = Github(token)
 repo = g.get_repo(repo_name)

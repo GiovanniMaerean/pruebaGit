@@ -17,15 +17,9 @@ def main() -> None:
 
     for commit in commits:
         print(commit.raw_data)
-        files = commit.files
-        lines_added = 0
-        files_modified = 0
 
-        for file in files:
-            files_modified += 1
-            lines = file.raw_data.get('additions', 0)
-
-            lines_added += lines
+        lines_added = commit.stats.additions
+        files_modified = len(commit.files)
 
         lines_added_per_commit.append(lines_added)
         files_modified_per_commit.append(files_modified)

@@ -1,4 +1,4 @@
-name: Weekly Report - Checklist
+name: Weekly Report - Checklist Issues (Opened and closed)
 
 on:
   workflow_dispatch:

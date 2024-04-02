@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from github import Github
 import matplotlib.pyplot as plt
 
+
 def generate_weekly_report(github_token, username, repository_name):
     # Crear una instancia de la clase Github
     g = Github(github_token)
@@ -24,14 +25,14 @@ def generate_weekly_report(github_token, username, repository_name):
         'Saturday': {'opened': 0, 'closed': 0},
         'Sunday': {'opened': 0, 'closed': 0}
     }
-    
+
     def get_day_of_week(date_str):
         date = datetime.strptime(date_str[:10], '%Y-%m-%d')
         return date.strftime('%A')
-    
+
     current_date = datetime.now()
     one_week_ago = current_date - timedelta(days=7)
-    
+
     for issue in issues:
         created_at = issue.created_at.replace(tzinfo=None)
         if created_at >= one_week_ago:
@@ -43,30 +44,27 @@ def generate_weekly_report(github_token, username, repository_name):
             if closed_at >= one_week_ago:
                 day_of_week = get_day_of_week(str(closed_at))
                 weekly_counts[day_of_week]['closed'] += 1
-                
+
     # Extraer los datos para la tabla
     dias = list(weekly_counts.keys())
     abiertas = [weekly_counts[d]["opened"] for d in weekly_counts]
     cerradas = [weekly_counts[d]["closed"] for d in weekly_counts]
 
-
-    
     data = {
         "Día de la Semana": dias,
-        "Abiertas": abiertas,
-        "Cerradas": cerradas
+        "Issues abiertas": abiertas,
+        "Issues cerradas": cerradas
     }
 
-    
     # Crear la tabla
     df = pd.DataFrame(data)
-    
+
     # Crear figura y eje
     fig, ax = plt.subplots()
-    
+
     # Eliminar marcas del eje
     ax.axis('off')
-    
+
     # Crear tabla
     tabla = ax.table(cellText=df.values,
                      colLabels=df.columns,
@@ -81,6 +79,7 @@ def generate_weekly_report(github_token, username, repository_name):
     tabla.scale(1.5, 1.5)
 
     # Guardar la imagen como PNG
+    plt.title(f'Checklist Issues (Opened and closed) - {get_date()}')
     plt.savefig('checklist_weekly.png', bbox_inches='tight', pad_inches=0.1, transparent=True)
     plt.show()
 
@@ -104,7 +103,19 @@ def generate_weekly_report(github_token, username, repository_name):
     print(f'{("Total").ljust(16)}| {str(total_opened).rjust(8)} | {str(total_closed).rjust(8)}')
     print('----------------------------------------')
     """
-    
+
+
+def get_date() -> str:
+    """The format is: MX-WY-Report -> where X is the month number and Y is the week number"""
+    now = datetime.now()
+    month = now.strftime("%m")
+    week_of_year = int(now.strftime("%U"))
+    first_day_of_month = now.replace(day=1)
+    week_of_first_day = int(first_day_of_month.strftime("%U"))
+    week_of_month = week_of_year - week_of_first_day + 1
+    return f"M{month}-W{week_of_month}-Report"
+
+
 # Obtener el token de acceso personal de GitHub de los secrets
 github_token = os.getenv('GITHUB_TOKEN')
 

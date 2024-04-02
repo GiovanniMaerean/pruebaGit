@@ -48,9 +48,11 @@ def get_data() -> None:
     for commit in commits:
         lines_added = commit.stats.additions
         files_modified = len(commit.files)
+        author_name = commit.author.login
 
         lines_added_per_commit.append(lines_added)
         files_modified_per_commit.append(files_modified)
+        authors_of_commits.append(author_name)
 
 
 def generate_diagram() -> None:

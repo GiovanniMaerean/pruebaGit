@@ -1,9 +1,14 @@
 import os
-import os
 from datetime import datetime, timezone, timedelta
 
 from github import Github
 import matplotlib.pyplot as plt
+
+# This code generates a scatter diagram with all the commits
+# done on this week, showing the added lines and the modified
+# files. It runs automatically every Sunday on 23:59 using the
+# "scatterWeeklyGenerator.yml" workflow.
+
 
 token = os.getenv('GITHUB_TOKEN')
 repo_name = "GiovanniMaerean/pruebaGit"
@@ -14,7 +19,12 @@ repo = g.get_repo(repo_name)
 lines_added_per_commit = []
 files_modified_per_commit = []
 
+authors_of_commits = []
 
+
+author_colors = {
+    "GiovanniMaerean": "blue",
+}
 def main() -> None:
     get_data()
     generate_diagram()
@@ -31,6 +41,7 @@ def get_date_range_of_current_week() -> tuple:
 
 
 def get_data() -> None:
+    """Gets all the lines added and files modified per commit"""
     start_of_week, end_of_week = get_date_range_of_current_week()
     commits = repo.get_commits(since=start_of_week)
 
@@ -43,8 +54,17 @@ def get_data() -> None:
 
 
 def generate_diagram() -> None:
+    """Generates and saves the scatter diagram with all the data"""
     plt.figure(figsize=(10, 6))
-    plt.scatter(lines_added_per_commit, files_modified_per_commit)
+    legend_authors = set()
+
+    for author, lines_added, files_modified in zip(authors_of_commits, lines_added_per_commit, files_modified_per_commit):
+        color = author_colors.get(author, "black")  # Default to black if author not in author_colors
+        if author not in legend_authors:
+            plt.scatter(lines_added, files_modified, color=color, label=author)
+            legend_authors.add(author)
+        else:
+            plt.scatter(lines_added, files_modified, color=color)
 
     plt.xlabel('Lines added')
     plt.ylabel('Files modified')

@@ -29,10 +29,10 @@ def main() -> None:
 
 
 def get_data() -> None:
+    """Gets all the lines added and files modified per commit"""
     commits = repo.get_commits()
 
     for commit in commits:
-        print(commit.raw_data)
         lines_added = commit.stats.additions
         files_modified = len(commit.files)
         author_name = commit.author.login
@@ -44,6 +44,7 @@ def get_data() -> None:
 
 
 def generate_diagram() -> None:
+    """Generates and saves the scatter diagram with all the data"""
     plt.figure(figsize=(10, 6))
     legend_authors = set()
     for author, lines_added, files_modified in zip(authors_of_commits, lines_added_per_commit, files_modified_per_commit):

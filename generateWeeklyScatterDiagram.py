@@ -66,11 +66,13 @@ def generate_diagram() -> None:
             plt.scatter(lines_added, files_modified, color=color, label=author)
             legend_authors.add(author)
         else:
-            plt.scatter(lines_added, files_modified, color=color)
+            if author != "GiovanniMaerean":
+                plt.scatter(lines_added, files_modified, color=color)
 
     plt.xlabel('Lines added')
     plt.ylabel('Files modified')
     plt.title(f'Scatter Diagram of Lines added and Files modified - {get_date()}')
+    plt.legend()
     plt.grid(True)
 
     plt.savefig("scatter_diagram_commits_weekly.png")

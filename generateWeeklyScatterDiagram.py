@@ -42,7 +42,7 @@ def get_data() -> None:
         closed_at = issue.closed_at
 
         # Verificar si la issue se cerró durante la semana actual
-        if closed_at is not None and start_of_week >= closed_at:
+        if closed_at is not None and start_of_week <= closed_at:
             created_at = issue.created_at
             time_to_close = (closed_at - created_at).days
             days_to_close.append(time_to_close)

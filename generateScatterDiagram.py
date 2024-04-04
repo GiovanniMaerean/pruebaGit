@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from collections import defaultdict
 from github import Github
 import matplotlib.pyplot as plt
 
@@ -15,9 +16,8 @@ g = Github(token)
 # Obtener el repositorio
 repo = g.get_repo(repo_name)
 
-# Listas para almacenar los datos de las issues
-days_to_close = []
-issue_created_dates = []
+# Diccionario para almacenar el número de issues cerradas por día
+issues_closed_per_day = defaultdict(int)
 
 
 def main() -> None:
@@ -26,33 +26,38 @@ def main() -> None:
 
 
 def get_data() -> None:
-    """Obtener los datos de las issues"""
+    """Obtener los datos de las issues cerradas por día"""
     issues = repo.get_issues(state='closed')  # Obtener todas las issues cerradas
 
     for issue in issues:
-        print(issue.raw_data)
         created_at = issue.created_at
         closed_at = issue.closed_at
 
-        # Calcular los días que se tardaron en cerrar la issue
+        # Verificar si la issue está cerrada
         if closed_at is not None:
-            time_to_close = (closed_at - created_at).days
-            days_to_close.append(time_to_close)
-            issue_created_dates.append(created_at)
+            # Usar la fecha de cierre como clave para el diccionario y aumentar el contador
+            issues_closed_per_day[closed_at.date()] += 1
 
 
 def generate_diagram() -> None:
-    """Generar y guardar el scatter diagram"""
+    """Generar y guardar el diagrama de barras"""
+    # Ordenar el diccionario por fecha
+    sorted_issues_closed_per_day = dict(sorted(issues_closed_per_day.items()))
+
+    dates = list(sorted_issues_closed_per_day.keys())
+    issues_closed = list(sorted_issues_closed_per_day.values())
+
     plt.figure(figsize=(10, 6))
+    plt.bar(dates, issues_closed, color='blue')
 
-    plt.scatter(issue_created_dates, days_to_close, color='blue', alpha=0.7)
+    plt.xlabel('Fecha de cierre de la issue')
+    plt.ylabel('Número de issues cerradas')
+    plt.title('Número de issues cerradas por día')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
 
-    plt.xlabel('Fecha de creación de la issue')
-    plt.ylabel('Días para cerrar la issue')
-    plt.title('Tiempo para cerrar las issues')
-    plt.grid(True)
-
-    plt.savefig("scatter_diagram_issues.png")
+    plt.savefig("bar_chart_issues_closed_per_day.png")
+    plt.show()
 
 
 if __name__ == '__main__':

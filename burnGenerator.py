@@ -44,7 +44,7 @@ total_closed_issues = sum(issues_data.values())
 total_issues = [total_closed_issues] * len(dates)
 
 # Calcular los días transcurridos desde el inicio del proyecto
-days_elapsed = [(date - start_date).days for date in dates]
+days_elapsed = [(date - start_date.date()).days for date in dates]
 
 # Crear el diagrama burn down
 plt.plot(dates, total_issues, label='Total de issues')

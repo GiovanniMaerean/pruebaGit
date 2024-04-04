@@ -16,8 +16,7 @@ g = Github(token)
 repo = g.get_repo(repo_name)
 
 # Definir rango de fechas desde el 12 de marzo de 2024 hasta el 4 de abril de 2024
-start_date = datetime(2024, 3, 12).date()
-end_date = datetime(2024, 4, 4).date()
+start_date = datetime(2024, 3, 12)  # Convertido a objeto datetime
 
 # Obtener todas las issues cerradas del repositorio en ese rango de fechas
 closed_issues = repo.get_issues(state='closed', since=start_date, sort='updated', direction='asc')
@@ -26,7 +25,7 @@ closed_issues = repo.get_issues(state='closed', since=start_date, sort='updated'
 issues_data = {}
 for issue in closed_issues:
     closed_at = issue.closed_at.date()
-    if start_date <= closed_at <= end_date:
+    if start_date.date() <= closed_at <= datetime(2024, 4, 4).date():
         issues_data[closed_at] = issues_data.get(closed_at, 0) + 1
 
 # Crear una lista ordenada de las fechas

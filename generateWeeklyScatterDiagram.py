@@ -32,18 +32,19 @@ def get_date_range_of_current_week() -> tuple:
     return start_of_week, end_of_week
 
 def get_data() -> None:
-    """Obtener los datos de las issues cerradas durante esta semana"""
-    start_of_week, end_of_week = get_date_range_of_current_week()
-    issues = repo.get_issues(state='closed', since=start_of_week, until=end_of_week)
+    """Obtener los datos de las issues"""
+    issues = repo.get_issues(state='closed', since=start_of_week)
 
     for issue in issues:
-        created_at = issue.created_at
         closed_at = issue.closed_at
 
-        if closed_at is not None:
+        # Verificar si la issue se cerró durante la semana actual
+        if closed_at is not None and start_of_week <= closed_at <= end_of_week:
+            created_at = issue.created_at
             time_to_close = (closed_at - created_at).days
             days_to_close.append(time_to_close)
             issue_created_dates.append(created_at)
+
 
 def generate_diagram() -> None:
     """Generar y guardar el scatter diagram con todos los datos"""

@@ -33,10 +33,12 @@ def get_date_range_of_current_week() -> tuple:
 
 def get_data() -> None:
     """Obtener los datos de las issues"""
+    print(repo_name)
     start_of_week, end_of_week = get_date_range_of_current_week()
     issues = repo.get_issues(state='closed')
 
     for issue in issues:
+        print(issue.raw_data)
         closed_at = issue.closed_at
 
         # Verificar si la issue se cerró durante la semana actual

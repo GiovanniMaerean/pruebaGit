@@ -1,48 +1,52 @@
 import os
 from github import Github
+import numpy as np
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-
-# Token de autenticación de GitHub
-token = os.getenv('GITHUB_TOKEN')
-
-# Nombre del repositorio en formato "username/repository"
-repo_name = "arnaums02/Joint-Project---Grup-B"
-
-# Inicialización de la instancia de Github
-g = Github(token)
-
-# Obtener el repositorio
-repo = g.get_repo(repo_name)
-
-# Listas para almacenar los datos de las issues
-open_issue_created_dates = []
-closed_issue_closed_dates = []
-open_issue_count = []
-closed_issue_count = []
+from datetime import date
 
 
-def main() -> None:
-    get_data()
-    generate_burndown_chart()
-    generate_burnup_chart()
+def main():
+    # Obtener el token de autenticación de GitHub desde las variables de entorno
+    token = os.getenv('GITHUB_TOKEN')
+
+    # Definir el nombre del repositorio
+    repo_name = "arnaums02/Joint-Project---Grup-B"
+
+    # Inicializar la instancia de Github
+    g = Github(token)
+
+    # Obtener el repositorio
+    repo = g.get_repo(repo_name)
+
+    # Listas para almacenar los datos de las issues
+    open_issue_created_dates = []
+    closed_issue_closed_dates = []
+    open_issue_count = []
+    closed_issue_count = []
+
+    # Obtener los datos de las issues
+    get_data(repo, open_issue_created_dates, closed_issue_closed_dates, open_issue_count, closed_issue_count)
+
+    # Generar y guardar los diagramas de Burn-down y Burn-up
+    generate_burndown_chart(open_issue_created_dates, closed_issue_closed_dates, open_issue_count, closed_issue_count)
 
 
-def get_data() -> None:
+def get_data(repo, open_issue_created_dates, closed_issue_closed_dates, open_issue_count, closed_issue_count):
     """Obtener los datos de las issues"""
-    open_issues = list(repo.get_issues(state='open'))
+    # Obtener todas las issues abiertas
+    open_issues = repo.get_issues(state='open')
     for issue in open_issues:
         open_issue_created_dates.append(issue.created_at.date())
     open_issue_count.append(len(open_issues))
 
     # Obtener todas las issues cerradas
-    closed_issues = list(repo.get_issues(state='closed'))
+    closed_issues = repo.get_issues(state='closed')
     for issue in closed_issues:
         closed_issue_closed_dates.append(issue.closed_at.date())
     closed_issue_count.append(len(closed_issues))
 
 
-def generate_burndown_chart() -> None:
+def generate_burndown_chart(open_issue_created_dates, closed_issue_closed_dates, open_issue_count, closed_issue_count):
     """Generar y guardar el diagrama de Burn-down"""
     plt.figure(figsize=(10, 6))
     dates = sorted(open_issue_created_dates + closed_issue_closed_dates)
@@ -55,11 +59,8 @@ def generate_burndown_chart() -> None:
     plt.grid(True)
     plt.savefig("burn_down_chart.png")
 
-
-def generate_burnup_chart() -> None:
     """Generar y guardar el diagrama de Burn-up"""
     plt.figure(figsize=(10, 6))
-    dates = sorted(open_issue_created_dates + closed_issue_closed_dates)
     plt.plot(dates, open_issue_count, color='blue', label='Issues Abiertas')
     plt.plot(dates, closed_issue_count, color='green', label='Issues Cerradas')
     plt.xlabel('Fecha')

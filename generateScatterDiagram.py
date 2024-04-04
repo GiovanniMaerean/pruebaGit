@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 token = os.getenv('GITHUB_TOKEN')
 
 # Nombre del repositorio en formato "username/repository"
-repo_name = "username/repository"
+repo_name = "GiovanniMaerean/pruebaGit"
 
 # Inicialización de la instancia de Github
 g = Github(token)

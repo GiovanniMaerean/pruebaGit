@@ -23,13 +23,12 @@ def main() -> None:
     generate_diagram()
 
 def get_data() -> None:
-     """Gets all the closed issues with their open date and time to close"""
+    """Gets all the closed issues with their open date and time to close"""
     issues = repo.get_issues(state='closed')
-
     for issue in issues:
         created_at = issue.created_at
         closed_at = issue.closed_at
-
+        
         if closed_at is not None:
             time_to_close = (closed_at - created_at).days
             days_to_close.append(time_to_close)

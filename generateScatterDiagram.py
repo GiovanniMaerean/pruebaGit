@@ -1,27 +1,24 @@
 import os
+from datetime import datetime
 from github import Github
 import matplotlib.pyplot as plt
 
-# This code generates a scatter diagram with all the
-# commits of the repository, showing the added lines and
-# the modified files. It has to be executed manually
-# using the "scatterGeneralReportGenerator.yml" workflow
-
-
+# Token de autenticación de GitHub
 token = os.getenv('GITHUB_TOKEN')
-repo_name = "GiovanniMaerean/pruebaGit"
 
+# Nombre del repositorio en formato "username/repository"
+repo_name = "username/repository"
+
+# Inicialización de la instancia de Github
 g = Github(token)
+
+# Obtener el repositorio
 repo = g.get_repo(repo_name)
 
-lines_added_per_commit = []
-files_modified_per_commit = []
-authors_of_commits = []
+# Listas para almacenar los datos de las issues
+days_to_close = []
+issue_created_dates = []
 
-
-author_colors = {
-    "GiovanniMaerean": "blue",
-}
 
 def main() -> None:
     get_data()
@@ -29,41 +26,32 @@ def main() -> None:
 
 
 def get_data() -> None:
-    """Gets all the lines added and files modified per commit"""
-    commits = repo.get_commits()
+    """Obtener los datos de las issues"""
+    issues = repo.get_issues(state='closed')  # Obtener todas las issues cerradas
 
-    for commit in commits:
-        lines_added = commit.stats.additions
-        files_modified = len(commit.files)
-        author_name = commit.author.login
+    for issue in issues:
+        created_at = issue.created_at
+        closed_at = issue.closed_at
 
-        lines_added_per_commit.append(lines_added)
-        files_modified_per_commit.append(files_modified)
-        authors_of_commits.append(author_name)
-
+        # Calcular los días que se tardaron en cerrar la issue
+        if closed_at is not None:
+            time_to_close = (closed_at - created_at).days
+            days_to_close.append(time_to_close)
+            issue_created_dates.append(created_at)
 
 
 def generate_diagram() -> None:
-    """Generates and saves the scatter diagram with all the data"""
+    """Generar y guardar el scatter diagram"""
     plt.figure(figsize=(10, 6))
-    legend_authors = set()
-    for author, lines_added, files_modified in zip(authors_of_commits, lines_added_per_commit, files_modified_per_commit):
-        color = author_colors.get(author, "black")  # Default to black if author not in author_colors
 
-        if author not in legend_authors:
+    plt.scatter(issue_created_dates, days_to_close, color='blue', alpha=0.7)
 
-            plt.scatter(lines_added, files_modified, color=color, label=author)
-            legend_authors.add(author)
-        else:
-            plt.scatter(lines_added, files_modified, color=color)
-
-    plt.xlabel('Lines added')
-    plt.ylabel('Files modified')
-    plt.title('Scatter Diagram of Lines added and Files modified')
-    plt.legend()
+    plt.xlabel('Fecha de creación de la issue')
+    plt.ylabel('Días para cerrar la issue')
+    plt.title('Tiempo para cerrar las issues')
     plt.grid(True)
 
-    plt.savefig("scatter_diagram_commits.png")
+    plt.savefig("scatter_diagram_issues.png")
 
 
 if __name__ == '__main__':

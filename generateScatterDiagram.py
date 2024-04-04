@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 token = os.getenv('GITHUB_TOKEN')
 
-repo_name = "GiovanniMaerean/pruebaGit"
+repo_name = "arnaums02/Joint-Project---Grup-B"
 
 g = Github(token)
 repo = g.get_repo(repo_name)

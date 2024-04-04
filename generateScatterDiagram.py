@@ -40,7 +40,7 @@ def get_data() -> None:
 
 
 def generate_diagram() -> None:
-    """Generar y guardar el diagrama de barras"""
+    """Generar y guardar el scatter diagram"""
     # Ordenar el diccionario por fecha
     sorted_issues_closed_per_day = dict(sorted(issues_closed_per_day.items()))
 
@@ -48,7 +48,7 @@ def generate_diagram() -> None:
     issues_closed = list(sorted_issues_closed_per_day.values())
 
     plt.figure(figsize=(10, 6))
-    plt.bar(dates, issues_closed, color='blue')
+    plt.scatter(dates, issues_closed, color='blue')
 
     plt.xlabel('Fecha de cierre de la issue')
     plt.ylabel('Número de issues cerradas')
@@ -56,7 +56,7 @@ def generate_diagram() -> None:
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
 
-    plt.savefig("bar_chart_issues_closed_per_day.png")
+    plt.savefig("scatter_diagram_issues.png")
     plt.show()
 
 

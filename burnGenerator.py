@@ -54,6 +54,6 @@ plt.ylabel('Número de issues')
 plt.title('Diagrama Burn Down del Repositorio GitHub')
 plt.legend()
 plt.grid(True)
-plt.savefig("burn_down_diagram.png")
+plt.savefig("burn_down_chart.png")
 
 plt.show()

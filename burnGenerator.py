@@ -30,13 +30,13 @@ def main() -> None:
 
 def get_data() -> None:
     """Obtener los datos de las issues"""
-    open_issues = repo.get_issues(state='open')
+    open_issues = list(repo.get_issues(state='open'))
     for issue in open_issues:
         open_issue_created_dates.append(issue.created_at.date())
     open_issue_count.append(len(open_issues))
 
     # Obtener todas las issues cerradas
-    closed_issues = repo.get_issues(state='closed')
+    closed_issues = list(repo.get_issues(state='closed'))
     for issue in closed_issues:
         closed_issue_closed_dates.append(issue.closed_at.date())
     closed_issue_count.append(len(closed_issues))

@@ -64,7 +64,7 @@ def generate_burndown() -> None:
     plt.grid(True)
 
     plt.tight_layout()
-    plt.savefig("burndown_chart.png")
+    plt.savefig("burn_down_chart.png")
 
 
 if __name__ == '__main__':

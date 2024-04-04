@@ -36,8 +36,11 @@ cumulative_closed = [issues_data[dates[0]]]
 for date in dates[1:]:
     cumulative_closed.append(cumulative_closed[-1] + issues_data[date])
 
+# Obtener el número total de issues cerradas
+total_closed_issues = closed_issues.totalCount
+
 # Crear una lista con el número total de issues
-total_issues = [len(closed_issues)] * len(dates)
+total_issues = [total_closed_issues] * len(dates)
 
 # Calcular los días transcurridos desde el inicio del proyecto
 days_elapsed = [(date - start_date).days for date in dates]

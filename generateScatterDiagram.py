@@ -1,64 +1,53 @@
 import os
 from datetime import datetime
-from collections import defaultdict
 from github import Github
 import matplotlib.pyplot as plt
 
-# Token de autenticación de GitHub
+# This code generates a scatter diagram with all the
+# commits of the repository, showing the added lines and
+# the modified files. It has to be executed manually
+# using the "scatterGeneralReportGenerator.yml" workflow
+
 token = os.getenv('GITHUB_TOKEN')
 
-# Nombre del repositorio en formato "username/repository"
 repo_name = "arnaums02/Joint-Project---Grup-B"
 
-# Inicialización de la instancia de Github
 g = Github(token)
-
-# Obtener el repositorio
 repo = g.get_repo(repo_name)
 
-# Diccionario para almacenar el número de issues cerradas por día
-issues_closed_per_day = defaultdict(int)
-
+days_to_close = []
+issue_created_dates = []
 
 def main() -> None:
     get_data()
     generate_diagram()
 
-
 def get_data() -> None:
-    """Obtener los datos de las issues cerradas por día"""
-    issues = repo.get_issues(state='closed')  # Obtener todas las issues cerradas
+     """Gets all the closed issues with their open date and time to close"""
+    issues = repo.get_issues(state='closed')
 
     for issue in issues:
         created_at = issue.created_at
         closed_at = issue.closed_at
 
-        # Verificar si la issue está cerrada
         if closed_at is not None:
-            # Usar la fecha de cierre como clave para el diccionario y aumentar el contador
-            issues_closed_per_day[closed_at.date()] += 1
-
+            time_to_close = (closed_at - created_at).days
+            days_to_close.append(time_to_close)
+            issue_created_dates.append(created_at)
 
 def generate_diagram() -> None:
-    """Generar y guardar el scatter diagram"""
-    # Ordenar el diccionario por fecha
-    sorted_issues_closed_per_day = dict(sorted(issues_closed_per_day.items()))
-
-    dates = list(sorted_issues_closed_per_day.keys())
-    issues_closed = list(sorted_issues_closed_per_day.values())
-
+    """Generates and saves the scatter diagram with all the data"""
     plt.figure(figsize=(10, 6))
-    plt.scatter(dates, issues_closed, color='blue')
 
-    plt.xlabel('Fecha de cierre de la issue')
-    plt.ylabel('Número de issues cerradas')
-    plt.title('Número de issues cerradas por día')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
+    plt.scatter(days_to_close, issue_created_dates, color='blue', alpha=0.7)
+
+    plt.xlabel('Días para cerrar la issue')
+    plt.ylabel('Fecha de creación de la issue')
+    plt.title('Tiempo para cerrar las issues')
+    plt.grid(True)
 
     plt.savefig("scatter_diagram_issues.png")
-    plt.show()
-
 
 if __name__ == '__main__':
     main()
+

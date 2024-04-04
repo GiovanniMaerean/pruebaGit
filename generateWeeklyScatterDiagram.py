@@ -33,6 +33,7 @@ def get_date_range_of_current_week() -> tuple:
 
 def get_data() -> None:
     """Obtener los datos de las issues"""
+    start_of_week, end_of_week = get_date_range_of_current_week()
     issues = repo.get_issues(state='closed', since=start_of_week)
 
     for issue in issues:

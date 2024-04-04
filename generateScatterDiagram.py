@@ -30,6 +30,7 @@ def get_data() -> None:
     issues = repo.get_issues(state='closed')  # Obtener todas las issues cerradas
 
     for issue in issues:
+        print(issue.raw_data)
         created_at = issue.created_at
         closed_at = issue.closed_at
 

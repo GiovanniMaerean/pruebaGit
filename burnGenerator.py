@@ -26,7 +26,7 @@ closed_issues = repo.get_issues(state='closed', since=start_date, sort='updated'
 issues_data = {}
 for issue in closed_issues:
     closed_at = issue.closed_at.date()
-    if start_date <= closed_at <= end_date:
+    if start_date.date() <= closed_at <= end_date.date():
         issues_data[closed_at] = issues_data.get(closed_at, 0) + 1
 
 # Crear una lista ordenada de las fechas

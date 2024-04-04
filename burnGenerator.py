@@ -16,7 +16,7 @@ g = Github(token)
 repo = g.get_repo(repo_name)
 
 # Definir rango de fechas desde el 12 de marzo de 2024 hasta el 4 de abril de 2024
-start_date = datetime(2024, 3, 12).date()  # Convertido a objeto datetime
+start_date = datetime(2024, 3, 12)  # Convertido a objeto datetime
 
 # Obtener todas las issues cerradas del repositorio en ese rango de fechas
 closed_issues = repo.get_issues(state='closed', since=start_date, sort='updated', direction='asc')
@@ -43,7 +43,7 @@ total_closed_issues = closed_issues.totalCount
 total_issues = [total_closed_issues] * len(dates)
 
 # Calcular los días transcurridos desde el inicio del proyecto
-days_elapsed = [(date - start_date).days for date in dates]
+days_elapsed = [(date - start_date.date()).days for date in dates]
 
 # Crear el diagrama burn down
 plt.plot(days_elapsed, total_issues, label='Total de issues')

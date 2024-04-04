@@ -1,0 +1,35 @@
+name: Weekly Burn Charts
+
+on:
+  schedule:
+    - cron: "59 23 * * 0"
+
+jobs:
+  generate_charts:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run:  |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Generate Burn Charts
+      run: python burnGenerator.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+
+    - name: Upload Burn Charts
+      uses: actions/upload-artifact@v2
+      with:
+        name: burn_charts
+        path: |
+          burn_down_chart.png
+          burn_up_chart.png
